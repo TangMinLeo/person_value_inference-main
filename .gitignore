@@ -1,0 +1,9 @@
+*.ignore
+
+*.log
+.vscode/
+cache/
+.idea/
+.git/
+.env
+models/

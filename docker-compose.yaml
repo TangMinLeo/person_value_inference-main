@@ -1,0 +1,53 @@
+services:
+  person-value-inference:
+    image: person-value-inference:vlee1.0
+    container_name: person-value-inference
+    restart: unless-stopped
+
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
+#              count: all
+#              capabilities: [gpu]
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONPATH=/app
+      - TZ=Asia/Shanghai
+      - HF_ENDPOINT=https://hf-mirror.com
+      - HF_HOME=/app/cache/huggingface
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
+
+    shm_size: 2.39gb
+
+    working_dir: /app
+
+    ports:
+      - "9970:9970"
+
+    volumes:
+      - .:/app
+      - huggingface_cache:/app/cache/huggingface
+
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+
+volumes:
+  huggingface_cache:
+    driver: local
+
+## 使用 docker-compose 启动（需先设置 API Key 环境变量）
+#export OPENAI_API_KEY=your_key
+#export DASHSCOPE_API_KEY=your_key
+#docker-compose up -d
+#
+## 进入容器
+#docker exec -it location-value-inference bash
+#
+## 启动翻译服务（在容器内）
+#python ch_to_en_API/sever.py
